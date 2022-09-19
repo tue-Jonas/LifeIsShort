@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Life Is Short.</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+  <div id="top" class="container my-2">
+    <div class="row">
+      <div class="form-floating col">
+        <input type="date" class="form-control" id="birthdate">
+        <label class="mx-2" for="birthdate">Your date of birth:</label>
+      </div>
+      <div class="form-floating col">
+        <input type="number" class="form-control" id="expectedAge">
+        <label class="mx-2" for="expectedAge">Your Expected age:</label>
+      </div>
+      <div class="col d-flex">
+        <button onclick="submit()" class="btn w-100 btn-lg btn-success">Submit</button>
+      </div>
+    </div>
+  </div>
+  <div id="fields" style="line-height: 0;" class="my-2">
+
+  </div>
+
+  <script>
+    function submit() {
+      const fieldsDiv = document.getElementById("fields");
+
+      const birthdateInput = document.getElementById('birthdate');
+      const expectedAgeInput = document.getElementById('expectedAge');
+
+      const birthdate = new Date(birthdateInput.value);
+      const deathDate = new Date(birthdate);
+      deathDate.setFullYear(deathDate.getFullYear() + parseInt(expectedAgeInput.value))
+
+      let calcParam = 1000 * 60 * 60 * 24;        // DAYS
+      //let calcParam = 1000 * 60 * 60 * 24 * 7;    // WEEKS
+      //let calcParam = 1000 * 60 * 60 * 24 * 30;   // MONTHS
+
+      let periods = (deathDate.getTime() - birthdate.getTime()) / calcParam;    // DAYS
+      //let periods = (deathDate.getTime() - birthdate.getTime()) / calcParam;  // WEEKS
+      //let periods = (deathDate.getTime() - birthdate.getTime()) / calcParam;  // MONTHS
+
+      let over = (new Date().getTime() - birthdate.getTime()) / calcParam;
+
+      let lifeTime = deathDate.getTime() - birthdate.getTime();
+      let aliveTime = new Date().getTime() - birthdate.getTime();
+      let percentage = 100/lifeTime * aliveTime;
+
+      const existingPara = document.getElementById('percentage');
+      if (existingPara != null) {
+        existingPara.remove();
+      }
+      const para = document.createElement("p");
+      para.id = "percentage";
+      para.className = "text-center text-danger fs-2 fw-bold";
+      para.innerHTML = (Math.round(percentage * 100) / 100) + "% of your lifetime is over."; 
+      document.getElementById('top').appendChild(para);
+
+      addFields(periods, over, birthdate);
+    }
+
+    function addFields(periods, over, birthdate) {
+      document.getElementById('fields').innerHTML = "";
+      
+      for (let period = 0; period <= periods; period++) {
+        const canv = document.createElement("canvas");
+        canv.height = 5;
+        canv.width = 5;
+        canv.className = "border border-secondary rounded";
+
+        canv.title = new Date(birthdate.getFullYear(), birthdate.getMonth(), birthdate.getDate() + period);
+
+        if (period < over) {
+          canv.classList.add("bg-danger");
+        }
+
+        document.getElementById('fields').appendChild(canv);
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
